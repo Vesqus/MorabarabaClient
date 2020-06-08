@@ -2,7 +2,7 @@ import { RedfoxClient } from "./rfxClient/RedfoxClient";
 import { Board } from "./morabaraba/Board";
 import { BoardField } from "./morabaraba/BoardField";
 
-var rfx = new RedfoxClient(window.location.origin + '/ws');
+var rfx = new RedfoxClient(window.location.origin.replace('http', 'ws') + '/ws');
 
 async function Initialize() {
     await rfx.Connect();
