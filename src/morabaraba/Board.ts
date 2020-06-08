@@ -347,7 +347,6 @@ export class Board extends Dispatcher {
         return true;
     }
     public onFieldClick(field: BoardField) {
-        console.log("clicked on field " + field.name);
         this.dispatchEvent("field_click", field);
     }
 }

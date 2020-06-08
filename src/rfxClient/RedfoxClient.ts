@@ -21,7 +21,9 @@ export class RedfoxClient extends Dispatcher {
         (window as any).pm = (move: string) => this.MakeMove(move);
     }
     public SendData(message: any) {
-        this.webSocket.send(JSON.stringify(message));
+        let pack = JSON.stringify(message);
+        console.log("Client sends: " + pack);
+        this.webSocket.send(pack);
     }
     public async JoinZone(zoneName: string) {
         var message = { "target": "global", "type": "rfx#jz", "zoneName": zoneName };
@@ -92,7 +94,7 @@ export class RedfoxClient extends Dispatcher {
         });
     }
     private async OnDataReceived(data: string) {
-        console.log("got data " + data);
+        console.log("Server sends: " + data);
         var message = JSON.parse(data);
         switch (message.type) {
             case "si#pm": {
