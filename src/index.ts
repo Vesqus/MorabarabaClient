@@ -26,14 +26,16 @@ board.addEventListener("field_click", async (field: BoardField) => {
     if (board.turn == rfx.myId) {
         if (state == "selectingTarget" || state == "movingSelectingTarget") {
             if (field.value != rfx.myId && field.value != -1) {
-                if (state == "selectingTarget") {
-                    rfx.MakeMove(destination.name + 'x' + field.name);
+                if (!board.isMill(field)) {
+                    if (state == "selectingTarget") {
+                        rfx.MakeMove(destination.name + 'x' + field.name);
 
-                } else if (state == "movingSelectingTarget") {
-                    rfx.MakeMove(source.name + "-" + destination.name + 'x' + field.name);
+                    } else if (state == "movingSelectingTarget") {
+                        rfx.MakeMove(source.name + "-" + destination.name + 'x' + field.name);
+                    }
+                    state = "";
+                    canClick = false;
                 }
-                state = "";
-                canClick = false;
             }
         } else if (state == "moving") {
             if (field.value == -1) {
@@ -67,9 +69,21 @@ board.addEventListener("field_click", async (field: BoardField) => {
             }
         } else if (field.value == rfx.myId) {
             //moving
-            state = "moving";
-            source = field;
-            $('#game-notification').html("Kliknj na pole, na które chcesz przenieść pionek.");
+            //check if has any free field to move to
+            for (let fieldpair in board.fieldGraphMatrix) {
+                if (fieldpair.includes(field.name)) {
+                    if (board.fieldGraphMatrix[fieldpair]) {
+                        let otherfield = fieldpair.toString().replace(field.name, '');
+                        if (board.fields.get(otherfield).value == -1) {
+                            state = "moving";
+                            source = field;
+                            $('#game-notification').html("Kliknj na pole, na które chcesz przenieść pionek.");
+                            break;
+                        }
+                    }
+                }
+            }
+
         }
     }
 });
