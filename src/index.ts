@@ -2,8 +2,8 @@ import { RedfoxClient } from "./rfxClient/RedfoxClient";
 import { Board } from "./morabaraba/Board";
 import { BoardField } from "./morabaraba/BoardField";
 
-var rfx = new RedfoxClient(window.location.origin.replace('http', 'ws') + '/ws');
-//var rfx = new RedfoxClient('ws://127.0.0.1:81/ws');
+//var rfx = new RedfoxClient(window.location.origin.replace('http', 'ws') + '/ws');
+var rfx = new RedfoxClient('ws://127.0.0.1:81/ws');
 
 async function Initialize() {
     await rfx.Connect();
@@ -82,20 +82,25 @@ board.addEventListener("field_click", async (field: BoardField) => {
         } else if (field.value == rfx.myId) {
             //moving
             //check if has any free field to move to
-            for (let fieldpair in board.fieldGraphMatrix) {
-                if (fieldpair.includes(field.name)) {
-                    if (board.fieldGraphMatrix[fieldpair]) {
-                        let otherfield = fieldpair.toString().replace(field.name, '');
-                        if (board.fields.get(otherfield).value == -1) {
-                            state = "moving";
-                            source = field;
-                            $('#game-notification').html("Kliknj na pole, na które chcesz przenieść pionek.");
-                            break;
+            if (mycows <= 3) {
+                state = "moving";
+                source = field;
+                $('#game-notification').html("Kliknj na pole, na które chcesz przenieść pionek.");
+            } else {
+                for (let fieldpair in board.fieldGraphMatrix) {
+                    if (fieldpair.includes(field.name)) {
+                        if (board.fieldGraphMatrix[fieldpair]) {
+                            let otherfield = fieldpair.toString().replace(field.name, '');
+                            if (board.fields.get(otherfield).value == -1) {
+                                state = "moving";
+                                source = field;
+                                $('#game-notification').html("Kliknj na pole, na które chcesz przenieść pionek.");
+                                break;
+                            }
                         }
                     }
                 }
             }
-
         }
     }
 });
