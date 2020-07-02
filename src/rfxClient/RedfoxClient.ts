@@ -105,6 +105,10 @@ export class RedfoxClient extends Dispatcher {
                 this.dispatchEvent("game_begin", message.isYourTurn);
                 break;
             }
+            case "si#ge": {
+                this.dispatchEvent("game_end", message.didYouWin);
+                break;
+            }
         }
     }
 }

@@ -80,6 +80,10 @@ rfx.addEventListener("game_begin", async (isYourTurn: boolean) => {
     $('#wait-for-game').removeClass('is-active');
     $('#game-notification').html(!isYourTurn ? "Ruch przeciwnika" : "Twój ruch");
 });
+rfx.addEventListener("game_end", async (didYouWin: boolean) => {
+    $('#game-end').addClass('is-active');
+    $('#game-end-text').html(`Gra zakończyła się twoją ${didYouWin ? "wygraną" : "przegraną"}.`);
+});
 rfx.addEventListener("player_move", async (data: any) => {
     $('#game-notification').html(data.playerId == rfx.myId ? "Ruch przeciwnika" : "Twój ruch");
     canClick = data.playerId != rfx.myId;
