@@ -2,7 +2,8 @@ import { RedfoxClient } from "./rfxClient/RedfoxClient";
 import { Board } from "./morabaraba/Board";
 import { BoardField } from "./morabaraba/BoardField";
 
-var rfx = new RedfoxClient(window.location.origin.replace('http', 'ws') + '/ws');
+//var rfx = new RedfoxClient(window.location.origin.replace('http', 'ws') + '/ws');
+var rfx = new RedfoxClient('ws://127.0.0.1:81/ws');
 
 async function Initialize() {
     await rfx.Connect();
@@ -26,7 +27,18 @@ board.addEventListener("field_click", async (field: BoardField) => {
     if (board.turn == rfx.myId) {
         if (state == "selectingTarget" || state == "movingSelectingTarget") {
             if (field.value != rfx.myId && field.value != -1) {
-                if (!board.isMill(field)) {
+                let canShoot = !board.isMill(field);
+                if (!canShoot) {
+                    canShoot = true;
+                    for (let boardField of board.fields.values()) {
+                        if (boardField.value != -1 && boardField.value != rfx.myId) {
+                            if (!board.isMill(boardField)) {
+                                canShoot = false;
+                            }
+                        }
+                    }
+                }
+                if (canShoot) {
                     if (state == "selectingTarget") {
                         rfx.MakeMove(destination.name + 'x' + field.name);
 
